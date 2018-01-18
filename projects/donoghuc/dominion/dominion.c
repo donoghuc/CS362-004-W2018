@@ -643,6 +643,48 @@ int getCost(int cardNumber)
   return -1;
 }
 
+/*Refactor cardEffect to pull out the following functions:
+1. adventurer
+2. smitthy
+3.
+4.
+5.
+
+*/
+
+/* adventurer function is to draw cards until two treasures are found,
+add treasure to your hand and discard other revealed cards
+*/
+int adventurer_function(int drawntreasure, struct gameState *state, int currentPlayer, int cardDrawn, int *temphand, int z) {
+    // loop through deck until two treasure cards are dealth (add non treasure to temp hand for discarding)
+    while(drawntreasure < 2) {
+        //if the deck is empty we need to shuffle discard and add to deck
+        if (state->deckCount[currentPlayer] < 1){
+            shuffle(currentPlayer, state);
+        }
+        drawCard(currentPlayer, state);
+        //top card of hand is most recently drawn card.
+        cardDrawn = state->hand[currentPlayer][state->handCount[currentPlayer]-1];
+        // if treasure increment counter
+        if (cardDrawn == copper || cardDrawn == silver || cardDrawn == gold){
+            drawntreasure++;
+        }
+        else{
+            temphand[z]=cardDrawn;
+            //this should just remove the top card (the most recently drawn one).
+            state->handCount[currentPlayer]--; 
+            z++;
+        }         
+    }
+    // discard all cards in play that have been drawn
+    while(z-1>=0){
+        state->discard[currentPlayer][state->discardCount[currentPlayer]++]=temphand[z-1]; 
+        z=z-1;
+    }
+    return 0;
+}
+
+
 int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState *state, int handPos, int *bonus)
 {
   int i;
@@ -666,26 +708,9 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
   //uses switch to select card and perform actions
   switch( card ) 
     {
+    // refactored to separate function 
     case adventurer:
-      while(drawntreasure<2){
-	if (state->deckCount[currentPlayer] <1){//if the deck is empty we need to shuffle discard and add to deck
-	  shuffle(currentPlayer, state);
-	}
-	drawCard(currentPlayer, state);
-	cardDrawn = state->hand[currentPlayer][state->handCount[currentPlayer]-1];//top card of hand is most recently drawn card.
-	if (cardDrawn == copper || cardDrawn == silver || cardDrawn == gold)
-	  drawntreasure++;
-	else{
-	  temphand[z]=cardDrawn;
-	  state->handCount[currentPlayer]--; //this should just remove the top card (the most recently drawn one).
-	  z++;
-	}
-      }
-      while(z-1>=0){
-	state->discard[currentPlayer][state->discardCount[currentPlayer]++]=temphand[z-1]; // discard all cards in play that have been drawn
-	z=z-1;
-      }
-      return 0;
+        return adventurer_function(drawntreasure, state, currentPlayer, cardDrawn, temphand, z);
 			
     case council_room:
       //+4 Cards
