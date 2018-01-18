@@ -645,7 +645,7 @@ int getCost(int cardNumber)
 
 /*Refactor cardEffect to pull out the following functions:
 1. adventurer
-2. smitthy
+2. smithy
 3.
 4.
 5.
@@ -681,6 +681,18 @@ int adventurer_function(int drawntreasure, struct gameState *state, int currentP
         state->discard[currentPlayer][state->discardCount[currentPlayer]++]=temphand[z-1]; 
         z=z-1;
     }
+    return 0;
+}
+
+/* smithy function lets player draw three cards to be used in buy round */
+int smithy_function(int currentPlayer, struct gameState *state, int handPos){
+    //draw 3 cards
+    for (int i = 0; i < 3; i++) {
+        drawCard(currentPlayer, state);
+    }
+      
+    //discard card from hand
+    discardCard(handPos, currentPlayer, state, 0);
     return 0;
 }
 
@@ -854,15 +866,16 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       return 0;
 		
     case smithy:
-      //+3 Cards
-      for (i = 0; i < 3; i++)
-	{
-	  drawCard(currentPlayer, state);
-	}
+      //pull out smithy into separate function
+        return smithy_function(currentPlayer, state, handPos);
+ //      for (i = 0; i < 3; i++)
+	// {
+	//   drawCard(currentPlayer, state);
+	// }
 			
-      //discard card from hand
-      discardCard(handPos, currentPlayer, state, 0);
-      return 0;
+ //      //discard card from hand
+ //      discardCard(handPos, currentPlayer, state, 0);
+ //      return 0;
 		
     case village:
       //+1 Card
