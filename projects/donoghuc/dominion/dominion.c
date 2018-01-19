@@ -713,7 +713,7 @@ int council_room_function(int currentPlayer, struct gameState *state, int handPo
     }  
     //+1 Buy
     //BUG-ADDITION
-    // state->numBuys++; //PRE-BUG
+    state->numBuys++; //PRE-BUG
     //state->numBuys++; //BUG 
       
     //Each other player draws a card
@@ -751,7 +751,9 @@ int feast_function(struct gameState *state, int choice1, int currentPlayer, int 
                 printf("Cards Left: %d\n", supplyCount(choice1, state));
             }
         }
-        else if (state->coins < getCost(choice1)){
+        //INTRODUCE-BUG
+        // else if (state->coins < getCost(choice1)){ //PRE-BUG
+        else if (state->coins <= getCost(choice1)){ //BUG
             printf("That card is too expensive!\n");
 
             if (DEBUG){
