@@ -655,7 +655,8 @@ int getCost(int cardNumber)
 /* adventurer function is to draw cards until two treasures are found,
 add treasure to your hand and discard other revealed cards
 */
-int adventurer_function(int drawntreasure, struct gameState *state, int currentPlayer, int cardDrawn, int *temphand, int z) {
+int adventurer_function(int drawntreasure, struct gameState *state, int currentPlayer, int cardDrawn, int *temphand) {
+    int z = 0;
     // loop through deck until two treasure cards are dealth (add non treasure to temp hand for discarding)
     while(drawntreasure < 2) {
         //if the deck is empty we need to shuffle discard and add to deck
@@ -696,6 +697,30 @@ int smithy_function(int currentPlayer, struct gameState *state, int handPos){
     return 0;
 }
 
+/* council_room function allows player to draw 4 cards and grants them an extra buy,
+ every other player gets to draw a card as well 
+*/
+int council_room_function(int currentPlayer, struct gameState *state, int handPos){
+    int i;
+    //+4 Cards
+    for (i = 0; i < 4; i++){
+       drawCard(currentPlayer, state);
+    }  
+    //+1 Buy
+    state->numBuys++;
+      
+    //Each other player draws a card
+    for (i = 0; i < state->numPlayers; i++){
+        if ( i != currentPlayer ){
+            drawCard(i, state);
+        }
+    }
+      
+    //put played card in played card pile
+    discardCard(handPos, currentPlayer, state, 0);
+    return 0;
+
+}
 
 int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState *state, int handPos, int *bonus)
 {
@@ -722,31 +747,33 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
     {
     // refactored to separate function 
     case adventurer:
-        return adventurer_function(drawntreasure, state, currentPlayer, cardDrawn, temphand, z);
+        return adventurer_function(drawntreasure, state, currentPlayer, cardDrawn, temphand);
 			
     case council_room:
-      //+4 Cards
-      for (i = 0; i < 4; i++)
-	{
-	  drawCard(currentPlayer, state);
-	}
+        //refactor to separate function
+        return council_room_function(currentPlayer, state, handPos);
+ //      //+4 Cards
+ //      for (i = 0; i < 4; i++)
+	// {
+	//   drawCard(currentPlayer, state);
+	// }
 			
-      //+1 Buy
-      state->numBuys++;
+ //      //+1 Buy
+ //      state->numBuys++;
 			
-      //Each other player draws a card
-      for (i = 0; i < state->numPlayers; i++)
-	{
-	  if ( i != currentPlayer )
-	    {
-	      drawCard(i, state);
-	    }
-	}
+ //      //Each other player draws a card
+ //      for (i = 0; i < state->numPlayers; i++)
+	// {
+	//   if ( i != currentPlayer )
+	//     {
+	//       drawCard(i, state);
+	//     }
+	// }
 			
-      //put played card in played card pile
-      discardCard(handPos, currentPlayer, state, 0);
+ //      //put played card in played card pile
+ //      discardCard(handPos, currentPlayer, state, 0);
 			
-      return 0;
+ //      return 0;
 			
     case feast:
       //gain card with cost up to 5
@@ -866,16 +893,9 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       return 0;
 		
     case smithy:
-      //pull out smithy into separate function
+        //pull out smithy into separate function
         return smithy_function(currentPlayer, state, handPos);
- //      for (i = 0; i < 3; i++)
-	// {
-	//   drawCard(currentPlayer, state);
-	// }
-			
- //      //discard card from hand
- //      discardCard(handPos, currentPlayer, state, 0);
- //      return 0;
+
 		
     case village:
       //+1 Card
