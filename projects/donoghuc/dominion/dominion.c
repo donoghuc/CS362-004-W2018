@@ -650,6 +650,7 @@ int getCost(int cardNumber)
 4. feast
 5. mine
 NOTE: I chose these because I reported on them in assignment-1
+This commit is the refactored, pre bug addition code. 
 */
 
 /* adventurer function is to draw cards until two treasures are found,
