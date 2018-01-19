@@ -675,7 +675,7 @@ int adventurer_function(int drawntreasure, struct gameState *state, int currentP
             temphand[z]=cardDrawn;
             //this should just remove the top card (the most recently drawn one).
             // BUG-ADDITION
-            state->handCount[currentPlayer]--; // PRE-BUG
+            // state->handCount[currentPlayer]--; // PRE-BUG
             // state->handCount[currentPlayer]--; // BUG 
             z++;
         }         
@@ -692,8 +692,8 @@ int adventurer_function(int drawntreasure, struct gameState *state, int currentP
 int smithy_function(int currentPlayer, struct gameState *state, int handPos){
     //draw 3 cards
     //BUG-ADDITION
-    for (int i = 0; i < 3; i++) { //PRE-BUG
-    // for (int i = 0; i <= 3; i++) { // BUG
+    // for (int i = 0; i < 3; i++) { //PRE-BUG
+    for (int i = 0; i <= 3; i++) { // BUG
         drawCard(currentPlayer, state);
     }
       
@@ -713,7 +713,7 @@ int council_room_function(int currentPlayer, struct gameState *state, int handPo
     }  
     //+1 Buy
     //BUG-ADDITION
-    state->numBuys++; //PRE-BUG
+    // state->numBuys++; //PRE-BUG
     //state->numBuys++; //BUG 
       
     //Each other player draws a card
@@ -752,8 +752,8 @@ int feast_function(struct gameState *state, int choice1, int currentPlayer, int 
             }
         }
         //INTRODUCE-BUG
-        else if (state->coins < getCost(choice1)){ //PRE-BUG
-        // else if (state->coins <= getCost(choice1)){ //BUG
+        // else if (state->coins < getCost(choice1)){ //PRE-BUG
+        else if (state->coins <= getCost(choice1)){ //BUG
             printf("That card is too expensive!\n");
 
             if (DEBUG){
