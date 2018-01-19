@@ -675,7 +675,7 @@ int adventurer_function(int drawntreasure, struct gameState *state, int currentP
             temphand[z]=cardDrawn;
             //this should just remove the top card (the most recently drawn one).
             // BUG-ADDITION
-            // state->handCount[currentPlayer]--; // PRE-BUG
+            state->handCount[currentPlayer]--; // PRE-BUG
             // state->handCount[currentPlayer]--; // BUG 
             z++;
         }         
@@ -691,7 +691,9 @@ int adventurer_function(int drawntreasure, struct gameState *state, int currentP
 /* smithy function lets player draw three cards to be used in buy round */
 int smithy_function(int currentPlayer, struct gameState *state, int handPos){
     //draw 3 cards
-    for (int i = 0; i < 3; i++) {
+    //BUG-ADDITION
+    // for (int i = 0; i < 3; i++) { //PRE-BUG
+    for (int i = 0; i <= 3; i++) { // BUG
         drawCard(currentPlayer, state);
     }
       
