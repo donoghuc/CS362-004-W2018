@@ -692,8 +692,8 @@ int adventurer_function(int drawntreasure, struct gameState *state, int currentP
 int smithy_function(int currentPlayer, struct gameState *state, int handPos){
     //draw 3 cards
     //BUG-ADDITION
-    // for (int i = 0; i < 3; i++) { //PRE-BUG
-    for (int i = 0; i <= 3; i++) { // BUG
+    for (int i = 0; i < 3; i++) { //PRE-BUG
+    // for (int i = 0; i <= 3; i++) { // BUG
         drawCard(currentPlayer, state);
     }
       
@@ -712,7 +712,9 @@ int council_room_function(int currentPlayer, struct gameState *state, int handPo
        drawCard(currentPlayer, state);
     }  
     //+1 Buy
-    state->numBuys++;
+    //BUG-ADDITION
+    // state->numBuys++; //PRE-BUG
+    //state->numBuys++; //BUG 
       
     //Each other player draws a card
     for (i = 0; i < state->numPlayers; i++){
