@@ -752,8 +752,8 @@ int feast_function(struct gameState *state, int choice1, int currentPlayer, int 
             }
         }
         //INTRODUCE-BUG
-        // else if (state->coins < getCost(choice1)){ //PRE-BUG
-        else if (state->coins <= getCost(choice1)){ //BUG
+        else if (state->coins < getCost(choice1)){ //PRE-BUG
+        // else if (state->coins <= getCost(choice1)){ //BUG
             printf("That card is too expensive!\n");
 
             if (DEBUG){
@@ -801,8 +801,9 @@ int mine_function(struct gameState *state, int choice1, int choice2, int current
     if ( (getCost(state->hand[currentPlayer][choice1]) + 3) > getCost(choice2) ){
         return -1;
     }
-
-    gainCard(choice2, state, 2, currentPlayer);
+    //INTRODUCE-BUG
+    // gainCard(choice2, state, 2, currentPlayer); //PRE_BUG
+    gainCard(choice2, state, 0, currentPlayer); //BUG
     //discard card from hand
     discardCard(handPos, currentPlayer, state, 0);
     //discard trashed card
