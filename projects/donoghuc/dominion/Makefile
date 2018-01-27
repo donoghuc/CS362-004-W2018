@@ -41,10 +41,19 @@ unittest3: unittest3.c dominion.o rngs.o
 unittest4: unittest4.c dominion.o rngs.o
 	gcc -o unittest4 unittest4.c -g dominion.o rngs.o $(CFLAGS)
 
-unittest5: unittest5.c dominion.o rngs.o
-	gcc -o unittest5 unittest5.c -g dominion.o rngs.o $(CFLAGS)
+cardtest1: cardtest1.c dominion.o rngs.o
+	gcc -o cardtest1 cardtest1.c -g dominion.o rngs.o $(CFLAGS)
 
-tests.out: unittest1 unittest2 unittest3 unittest4 unittest5
+cardtest2: cardtest2.c dominion.o rngs.o
+	gcc -o cardtest2 cardtest2.c -g dominion.o rngs.o $(CFLAGS)
+
+cardtest3: cardtest3.c dominion.o rngs.o
+	gcc -o cardtest3 cardtest3.c -g dominion.o rngs.o $(CFLAGS)
+
+cardtest4: cardtest4.c dominion.o rngs.o
+	gcc -o cardtest4 cardtest4.c -g dominion.o rngs.o $(CFLAGS)
+
+tests.out: unittest1 unittest2 unittest3 unittest4 cardtest1 cardtest2 cardtest3 cardtest4 
 	echo "Running Unit Tests for Assignment-3:" > tests.out
 	echo "unittest1.c: shuffle unit test." >> tests.out
 	./unittest1 >> tests.out
@@ -58,10 +67,18 @@ tests.out: unittest1 unittest2 unittest3 unittest4 unittest5
 	echo "unittest4.c: shuffle unit test." >> tests.out
 	./unittest4 >> tests.out
 	gcov dominion.c >> tests.out
-	echo "unittest5.c: shuffle unit test." >> tests.out
-	./unittest5 >> tests.out
+	echo "cardtest1.c: shuffle unit test." >> tests.out
+	./cardtest1 >> tests.out
 	gcov dominion.c >> tests.out
-
+	echo "cardtest2.c: shuffle unit test." >> tests.out
+	./cardtest2 >> tests.out
+	gcov dominion.c >> tests.out
+	echo "cardtest3.c: shuffle unit test." >> tests.out
+	./cardtest3 >> tests.out
+	gcov dominion.c >> tests.out
+	echo "cardtest4.c: shuffle unit test." >> tests.out
+	./cardtest4 >> tests.out
+	gcov dominion.c >> tests.out
 
 player: player.c interface.o
 	gcc -o player player.c -g  dominion.o rngs.o interface.o $(CFLAGS)
@@ -69,4 +86,7 @@ player: player.c interface.o
 all: playdom player testDrawCard testBuyCard badTestDrawCard tests.out
 
 clean:
-	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out testDrawCard testDrawCard.exe unittest1
+	rm -f *.o playdom.exe playdom player player.exe  *.gcov \
+	*.gcda *.gcno *.so *.out  testDrawCard testDrawCard.exe \
+	badTestDrawCard unittest1 unittest2 unittest3 unittest4 cardtest1 \
+	cardtest2 cardtest3 cardtest4 
