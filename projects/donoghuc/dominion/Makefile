@@ -29,19 +29,44 @@ runtests: testDrawCard
 	gcov dominion.c >> unittestresult.out
 	cat dominion.c.gcov >> unittestresult.out
 
-tests.out: unittest1.c dominion.o rngs.o
-	echo "Running Unit Tests for Assignment-3:" > tests.out
-	
-	echo "unittest1.c: shuffle unit test." >> tests.out
+unittest1: unittest1.c dominion.o rngs.o
 	gcc -o unittest1 unittest1.c -g dominion.o rngs.o $(CFLAGS)
+
+unittest2: unittest2.c dominion.o rngs.o
+	gcc -o unittest2 unittest2.c -g dominion.o rngs.o $(CFLAGS)
+
+unittest3: unittest3.c dominion.o rngs.o
+	gcc -o unittest3 unittest3.c -g dominion.o rngs.o $(CFLAGS)
+
+unittest4: unittest4.c dominion.o rngs.o
+	gcc -o unittest4 unittest4.c -g dominion.o rngs.o $(CFLAGS)
+
+unittest5: unittest5.c dominion.o rngs.o
+	gcc -o unittest5 unittest5.c -g dominion.o rngs.o $(CFLAGS)
+
+tests.out: unittest1 unittest2 unittest3 unittest4 unittest5
+	echo "Running Unit Tests for Assignment-3:" > tests.out
+	echo "unittest1.c: shuffle unit test." >> tests.out
 	./unittest1 >> tests.out
+	gcov dominion.c >> tests.out
+	echo "unittest2.c: shuffle unit test." >> tests.out
+	./unittest2 >> tests.out
+	gcov dominion.c >> tests.out
+	echo "unittest3.c: shuffle unit test." >> tests.out
+	./unittest3 >> tests.out
+	gcov dominion.c >> tests.out
+	echo "unittest4.c: shuffle unit test." >> tests.out
+	./unittest4 >> tests.out
+	gcov dominion.c >> tests.out
+	echo "unittest5.c: shuffle unit test." >> tests.out
+	./unittest5 >> tests.out
 	gcov dominion.c >> tests.out
 
 
 player: player.c interface.o
 	gcc -o player player.c -g  dominion.o rngs.o interface.o $(CFLAGS)
 
-all: playdom player testDrawCard testBuyCard badTestDrawCard
+all: playdom player testDrawCard testBuyCard badTestDrawCard tests.out
 
 clean:
 	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out testDrawCard testDrawCard.exe unittest1
