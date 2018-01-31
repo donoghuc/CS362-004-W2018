@@ -7,6 +7,34 @@
 int rand_between(int min, int max){
     return rand() % (max + 1 - min) + min;
 }
+// // c is the devil
+// void scramble_string(char *return_this){
+
+//     char string_set[5] = {'r','e','s','e','t'};
+//     char scrambled_set[6];
+//     int str_set_len = 4;
+//     int counter = 0;
+//     int rand_index;
+
+//     while (str_set_len >= 0) {
+//       rand_index = rand_between(0, str_set_len);
+//       scrambled_set[counter] = string_set[rand_index];
+//       printf("%c, %d, %d, %d\n",string_set[rand_index],counter,str_set_len,rand_index);
+//       counter++;
+
+//       for (int i = rand_index; i < str_set_len; i++) {
+//         string_set[i] = string_set[i+1];
+//       }
+//       str_set_len--;
+//     }
+//     printf("%s\n", scrambled_set);
+//     strncpy(return_this, scrambled_set, 6)
+//   // char* myFunction(char * buf, int buf_len){
+//   // strncpy(buf, "my string", buf_len);
+//   // return buf;
+// }
+
+
 // return a psudo random character from array defined below
 char inputChar()
 {
@@ -14,10 +42,15 @@ char inputChar()
     return c_set[rand_between(0,8)];
 }
 
+// building 
 char *inputString()
 {
-    // TODO: rewrite this function
-    return "reset";
+    int x;
+    x = rand_between(0,3);
+
+    static char * s_set[] = {"reset", "not_reset", "shut_down", "restart"};
+    return s_set[x];
+
 }
 
 void testme()
