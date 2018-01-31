@@ -29,12 +29,13 @@ char *inputString()
     int str_set_len = 4;
     int counter = 0;
     int rand_index;
+    int i;
     // algorithm to choose from string set without replacement
     while (str_set_len >= 0) {
         rand_index = rand_between(0, str_set_len);
         scrambled_set[counter] = string_set[rand_index];
         counter++;
-        for (int i = rand_index; i < str_set_len; i++) {
+        for (i = rand_index; i < str_set_len; i++) {
           string_set[i] = string_set[i+1];
         }
         str_set_len--;
