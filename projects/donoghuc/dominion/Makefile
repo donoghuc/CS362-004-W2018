@@ -55,9 +55,13 @@ cardtest4: cardtest4.c dominion.o rngs.o
 
 tests.out: unittest1 unittest2 unittest3 unittest4 cardtest1 cardtest2 cardtest3 cardtest4 
 	echo "Running Unit Tests for Assignment-3:" > tests.out
+	echo "====================================" >> tests.out
 	echo "unittest1.c: shuffle unit test." >> tests.out
+	echo "====================================" >> tests.out
 	./unittest1 >> tests.out
+	echo "====================================" >> tests.out
 	gcov dominion.c >> tests.out
+	echo "====================================" >> tests.out
 	echo "unittest2.c: shuffle unit test." >> tests.out
 	./unittest2 >> tests.out
 	gcov dominion.c >> tests.out
