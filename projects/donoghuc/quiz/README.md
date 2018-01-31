@@ -1,6 +1,8 @@
 # Random Testing Quiz
 #### Cas Donoghue
 
+__This is my random quiz submission__
+
 ## MAN
 I wrote a makefile that allows user to see how the testing is working. I describe the workflow below. 
 1.	After cloning repo, run ```make run_testme``` This will compile testme and run the simulation
