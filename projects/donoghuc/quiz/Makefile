@@ -1,11 +1,13 @@
 CFLAGS = -Wall -fpic -coverage -lm
 
-testme: testme.c
+build_testme: testme.c
 	gcc -o testme testme.c $(CFLAGS)
+
+run_testme: testme
 	./testme
 	
-all:
-	testme
+test_cov: testme
+	gcov testme.c 
 
 clean:
-	rm -f testme
+	rm -f testme testme.gcda testme.gcno testme.c.gcov
