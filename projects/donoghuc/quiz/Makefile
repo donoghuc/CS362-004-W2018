@@ -8,6 +8,7 @@ run_testme: testme
 	
 test_cov: testme
 	gcov testme.c 
+	cat testme.c.gcov
 
 clean:
 	rm -f testme testme.gcda testme.gcno testme.c.gcov
