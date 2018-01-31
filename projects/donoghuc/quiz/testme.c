@@ -17,17 +17,31 @@ char inputChar()
 }
 
 // note that this function must return a pointer to a string. A safe way to do this is to use
-// static memory. In this case an array of strings is permanently (staticly) defined so that when the
-// reference pointer is passed to the testme() function a real string is there. 
+// static memory. In this case an array of 6 chars is staticly generated and filled with a random
+// scramble of the string "reset"
 char *inputString()
 {
-    // get random integer within range or array index
-    int random_index;
-    random_index = rand_between(0,3);
-    // static defition of strings for safe return reference. 'reset' will cause the error
-    static char * s_set[] = {"reset", "not_reset", "shut_down", "restart"};
-    return s_set[random_index];
-
+    // set of characters to pick from 
+    char string_set[5] = {'r','e','s','e','t'};
+    // staticly allocate this so it can be pointed to 
+    static char scrambled_set[6];
+    //counters for picking without replacement
+    int str_set_len = 4;
+    int counter = 0;
+    int rand_index;
+    // algorithm to choose from string set without replacement
+    while (str_set_len >= 0) {
+        rand_index = rand_between(0, str_set_len);
+        scrambled_set[counter] = string_set[rand_index];
+        counter++;
+        for (int i = rand_index; i < str_set_len; i++) {
+          string_set[i] = string_set[i+1];
+        }
+        str_set_len--;
+    }
+    // ensure string is null terminated and return
+    scrambled_set[5] = '\0';
+    return scrambled_set;
 }
 
 void testme()
