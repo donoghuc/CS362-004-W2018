@@ -3,16 +3,21 @@
 #include<stdlib.h>
 #include<time.h>
 
+// return a psudo random integer in given range (inclusive)
+int rand_between(int min, int max){
+    return rand() % (max + 1 - min) + min;
+}
+// return a psudo random character from array defined below
 char inputChar()
 {
-    // TODO: rewrite this function
-    return ' ';
+    char c_set[9] = {'[', '(', '{', ' ', 'a', 'x', '}', ')', ']'};
+    return c_set[rand_between(0,8)];
 }
 
 char *inputString()
 {
     // TODO: rewrite this function
-    return "";
+    return "reset";
 }
 
 void testme()
