@@ -61,10 +61,13 @@ tests.out: unittest1 unittest2 unittest3 unittest4 cardtest1 cardtest2 cardtest3
 	./unittest1 >> tests.out
 	echo "====================================" >> tests.out
 	gcov dominion.c >> tests.out
+	cat dominion.c.gcov >> tests.out
 	echo "====================================" >> tests.out
 	echo "unittest2.c: shuffle unit test." >> tests.out
+	echo "====================================" >> tests.out
 	./unittest2 >> tests.out
 	gcov dominion.c >> tests.out
+	echo "====================================" >> tests.out
 	echo "unittest3.c: shuffle unit test." >> tests.out
 	./unittest3 >> tests.out
 	gcov dominion.c >> tests.out
