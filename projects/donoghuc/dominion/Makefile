@@ -75,7 +75,7 @@ tests.out: unittest1 unittest2 unittest3 unittest4 cardtest1 cardtest2 cardtest3
 	echo "====================================" >> tests.out
 	gcov dominion.c >> tests.out
 	echo "====================================" >> tests.out
-	echo "unittest4.c: shuffle unit test." >> tests.out
+	echo "unittest4.c: endTurn unit test." >> tests.out
 	echo "====================================" >> tests.out
 	./unittest4 >> tests.out
 	echo "====================================" >> tests.out
