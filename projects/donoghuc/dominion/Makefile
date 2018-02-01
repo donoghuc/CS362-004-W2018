@@ -54,38 +54,57 @@ cardtest4: cardtest4.c dominion.o rngs.o
 	gcc -o cardtest4 cardtest4.c -g dominion.o rngs.o $(CFLAGS)
 
 tests.out: unittest1 unittest2 unittest3 unittest4 cardtest1 cardtest2 cardtest3 cardtest4 
-	echo "Running Unit Tests for Assignment-3:" > tests.out
+	echo "====================================" > tests.out
+	echo "Running Unit Tests for Assignment-3:" >> tests.out
 	echo "====================================" >> tests.out
 	echo "unittest1.c: shuffle unit test." >> tests.out
 	echo "====================================" >> tests.out
 	./unittest1 >> tests.out
 	echo "====================================" >> tests.out
 	gcov dominion.c >> tests.out
-	cat dominion.c.gcov >> tests.out
 	echo "====================================" >> tests.out
-	echo "unittest2.c: shuffle unit test." >> tests.out
+	echo "unittest2.c: buyCard unit test." >> tests.out
 	echo "====================================" >> tests.out
 	./unittest2 >> tests.out
+	echo "====================================" >> tests.out
 	gcov dominion.c >> tests.out
 	echo "====================================" >> tests.out
-	echo "unittest3.c: shuffle unit test." >> tests.out
+	echo "unittest3.c: updateCoins unit test." >> tests.out
+	echo "====================================" >> tests.out
 	./unittest3 >> tests.out
+	echo "====================================" >> tests.out
 	gcov dominion.c >> tests.out
+	echo "====================================" >> tests.out
 	echo "unittest4.c: shuffle unit test." >> tests.out
+	echo "====================================" >> tests.out
 	./unittest4 >> tests.out
+	echo "====================================" >> tests.out
 	gcov dominion.c >> tests.out
+	echo "====================================" >> tests.out
 	echo "cardtest1.c: shuffle unit test." >> tests.out
+	echo "====================================" >> tests.out
 	./cardtest1 >> tests.out
+	echo "====================================" >> tests.out
 	gcov dominion.c >> tests.out
+	echo "====================================" >> tests.out
 	echo "cardtest2.c: shuffle unit test." >> tests.out
+	echo "====================================" >> tests.out
 	./cardtest2 >> tests.out
+	echo "====================================" >> tests.out
 	gcov dominion.c >> tests.out
+	echo "====================================" >> tests.out
 	echo "cardtest3.c: shuffle unit test." >> tests.out
+	echo "====================================" >> tests.out
 	./cardtest3 >> tests.out
+	echo "====================================" >> tests.out
 	gcov dominion.c >> tests.out
+	echo "====================================" >> tests.out
 	echo "cardtest4.c: shuffle unit test." >> tests.out
 	./cardtest4 >> tests.out
+	echo "====================================" >> tests.out
 	gcov dominion.c >> tests.out
+	echo "====================================" >> tests.out
+	cat tests.out
 
 player: player.c interface.o
 	gcc -o player player.c -g  dominion.o rngs.o interface.o $(CFLAGS)
