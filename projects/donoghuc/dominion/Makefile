@@ -62,24 +62,32 @@ unittestresults.out: unittest1 unittest2 unittest3 unittest4 cardtest1 cardtest2
 	./unittest1 >> unittestresults.out
 	echo "====================================" >> unittestresults.out
 	gcov dominion.c >> unittestresults.out
+	echo "shuffle stats" >> unittestresults.out
+	gcov -abcfu dominion.c | sed -n '/shuffle/{n;p; n;p; n;p; n;p}' >> unittestresults.out
 	echo "====================================" >> unittestresults.out
 	echo "unittest2.c: buyCard unit test." >> unittestresults.out
 	echo "====================================" >> unittestresults.out
 	./unittest2 >> unittestresults.out
 	echo "====================================" >> unittestresults.out
 	gcov dominion.c >> unittestresults.out
+	echo "buyCard stats" >> unittestresults.out
+	gcov -abcfu dominion.c | sed -n '/buyCard/{n;p; n;p; n;p; n;p}' >> unittestresults.out
 	echo "====================================" >> unittestresults.out
 	echo "unittest3.c: updateCoins unit test." >> unittestresults.out
 	echo "====================================" >> unittestresults.out
 	./unittest3 >> unittestresults.out
 	echo "====================================" >> unittestresults.out
 	gcov dominion.c >> unittestresults.out
+	echo "updateCoins stats" >> unittestresults.out
+	gcov -abcfu dominion.c | sed -n '/updateCoins/{n;p; n;p; n;p; n;p}' >> unittestresults.out
 	echo "====================================" >> unittestresults.out
 	echo "unittest4.c: endTurn unit test." >> unittestresults.out
 	echo "====================================" >> unittestresults.out
 	./unittest4 >> unittestresults.out
 	echo "====================================" >> unittestresults.out
 	gcov dominion.c >> unittestresults.out
+	echo "endTurn stats" >> unittestresults.out
+	gcov -abcfu dominion.c | sed -n '/endTurn/{n;p; n;p; n;p; n;p}' >> unittestresults.out
 	echo "====================================" >> unittestresults.out
 	echo "cardtest1.c: smitthy unit test." >> unittestresults.out
 	echo "====================================" >> unittestresults.out
