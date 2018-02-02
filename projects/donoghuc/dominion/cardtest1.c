@@ -1,7 +1,6 @@
 #include "dominion.h"
 #include "interface.h"
 #include <stdio.h>
-#include <assert.h>
 
 
 int main () {

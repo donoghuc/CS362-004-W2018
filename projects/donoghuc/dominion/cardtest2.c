@@ -1,7 +1,6 @@
 #include "dominion.h"
 #include "interface.h"
 #include <stdio.h>
-#include <assert.h>
 
 // return 0 if card is a treasutre, one if not
 int is_treasure(int card){

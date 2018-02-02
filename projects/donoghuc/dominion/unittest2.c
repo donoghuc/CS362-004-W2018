@@ -1,6 +1,5 @@
 #include "dominion.h"
 #include <stdio.h>
-#include <assert.h>
 
 int compare(const int* a, const int* b);
 // print the cards in a player's hand
@@ -46,7 +45,10 @@ int main () {
   printf("number village cards in hand pre buy: %d\n",village_pre);
 
   int ret = buyCard(village, &G);
-  assert(ret == 0);
+  if (ret != 0){
+    printf("ERROR: BUY CARD NON ZERO RETURN VALUE\n");
+    fail++;
+  }
   printf("Num coins to spend post buyCard: %d\n", G.coins);
   printf("Hand Count post buyCard: %d\n", G.handCount[0]);
   printf("Village supply post buyCard: %d\n", G.supplyCount[village]);

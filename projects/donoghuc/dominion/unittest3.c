@@ -1,6 +1,6 @@
 #include "dominion.h"
 #include <stdio.h>
-#include <assert.h>
+
 
 int compare(const int* a, const int* b);
 int updateCoins(int player, struct gameState *state, int bonus);

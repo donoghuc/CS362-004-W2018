@@ -17,6 +17,7 @@ void print_deck(int player, struct gameState *state){
 
 // unit test for shuffle function implemented in dominion.c
 int main () {
+  int fail=0;
   //initialize a game with two players
   printf("Initialize a game with 2 players\n");
   struct gameState G;
@@ -28,7 +29,10 @@ int main () {
   printf("Test that copy of initialized game is exact copy\n");
   struct gameState G2;
   memcpy (&G2, &G, sizeof(struct gameState));
-  assert(memcmp(&G, &G2, sizeof(struct gameState)) == 0); 
+  if (memcmp(&G, &G2, sizeof(struct gameState)) != 0){
+    printf("ERROR: MEM COPY ERROR\n");
+    fail++;
+  }
   // print out pre and post shuffle and make sure the return values are 0
   printf("Whos turn?: %d\n", G.whoseTurn);
   printf("Player 0 deckCount: %d\n", G2.deckCount[0]);
@@ -38,8 +42,14 @@ int main () {
   printf("Player 1 deck pre shuffle: ");
   print_deck(1, &G);
   printf("Shuffle both players and assert return value is 0\n");
-  assert(shuffle(0,&G) == 0);
-  assert(shuffle(1,&G) == 0);
+  if(shuffle(0,&G) != 0){
+    printf("ERROR: SUFFLE NON ZERO RETURN VALUE\n");
+    fail++;
+  }
+  if(shuffle(1,&G) != 0){
+    printf("ERROR: SUFFLE NON ZERO RETURN VALUE\n");
+    fail++;
+  }
   printf("Both player shuffles return 0\n");
   printf("Player 0 deck post shuffle: ");
   print_deck(0, &G);
@@ -54,9 +64,14 @@ int main () {
       printf("tries: %d\n",i + 1);
       break;
     }
+    printf("shuffling player 0 again, status: %d \n", shuffle(0,&G));
+    printf("shuffling player 1 again, status: %d \n", shuffle(1,&G));
     warning++;
   }
-  assert(warning < 10);
+  if (warning >= 10){
+    printf("ERROR:CARDS NOT BEING SHUFFLED\n");
+    fail++;
+  }
 
   // make sure the content of the pre and post shuffle decks are the same
   printf("Assert no cards were added or removed from deck\n");
@@ -64,12 +79,18 @@ int main () {
   qsort ((void*)(G.deck[1]), G.deckCount[1], sizeof(int), compare);
   qsort ((void*)(G2.deck[0]), G2.deckCount[0], sizeof(int), compare);
   qsort ((void*)(G2.deck[1]), G2.deckCount[1], sizeof(int), compare);
-  assert(memcmp(&G, &G2, sizeof(struct gameState)) == 0);  
+  if(memcmp(&G, &G2, sizeof(struct gameState)) != 0){
+    printf("ERROR: SHUFFLED CARDS ALTERED\n");
+    fail++;
+  }
 
   // test that shuffle can return -1 when problem occurs 
   printf("Assert that -1 is returned when a players deck count is less than 1\n");
   G.deckCount[0] = 0;
-  assert(shuffle(0,&G) == -1);
+  if(shuffle(0,&G) != -1){
+    printf("ERROR: SUFFLE DOES NOT ERROR CORRECTLY\n");
+    fail++;
+  }
   printf("====================================\n");
   printf("SHUFFLE TEST PASSED\n");
 

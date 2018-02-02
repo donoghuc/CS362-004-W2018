@@ -12,7 +12,7 @@ int main () {
     int k[10] = {adventurer, council_room, embargo, village, minion, mine, cutpurse,
            sea_hag, tribute, smithy};
     initializeGame(2, k, 10, &G);
-    // put smitthy in position 0 to play it
+    // put council room in position 0 to play it
     G.hand[G.whoseTurn][0] = council_room;
     printHand(0,&G);
     // track hand count 
