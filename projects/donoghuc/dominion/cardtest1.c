@@ -44,7 +44,7 @@ int main () {
     printHand(0,&G);
     printf("====================================\n");
     if(fail == 0){
-      printf("END SMITTHY TEST PASSED\n");
+      printf("SMITTHY TEST PASSED\n");
     }
     else{
     	printf("%d TEST FAILURE(s)\n", fail);
