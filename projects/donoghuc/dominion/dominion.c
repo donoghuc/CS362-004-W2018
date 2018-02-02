@@ -690,10 +690,11 @@ int adventurer_function(int drawntreasure, struct gameState *state, int currentP
 
 /* smithy function lets player draw three cards to be used in buy round */
 int smithy_function(int currentPlayer, struct gameState *state, int handPos){
+    int i;
     //draw 3 cards
     //BUG-ADDITION
     // for (int i = 0; i < 3; i++) { //PRE-BUG
-    for (int i = 0; i <= 3; i++) { // BUG
+    for (i = 0; i <= 3; i++) { // BUG
         drawCard(currentPlayer, state);
     }
       
