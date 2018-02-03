@@ -6,7 +6,7 @@
 int main () {
 	// set up game state
     int fail = 0; 
-    printf("Initialize a game with 2 players and add smithy to player 0 hand\n");
+    printf("Initialize a game with 2 players and add great_hall to player 0 hand\n");
     struct gameState G;
     int k[10] = {adventurer, great_hall, embargo, village, minion, mine, cutpurse,
            sea_hag, tribute, smithy};
@@ -48,7 +48,7 @@ int main () {
     	fail++;  	
     }
     // check that numBuys incremented
-    printf("Num Buys post: %d\n", G.numActions);
+    printf("Num actions post: %d\n", G.numActions);
     if (G.numActions - numActions != 1){
     	printf("ERROR, ACTIONS NOT PROPERLY INCREMENTED\n");
     	fail++;
