@@ -676,7 +676,7 @@ int adventurer_function(int drawntreasure, struct gameState *state, int currentP
             //this should just remove the top card (the most recently drawn one).
             // BUG-ADDITION
             // state->handCount[currentPlayer]--; // PRE-BUG
-            // state->handCount[currentPlayer]--; // BUG 
+            state->handCount[currentPlayer]--; // BUG 
             z++;
         }         
     }
