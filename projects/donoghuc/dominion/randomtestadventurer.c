@@ -4,6 +4,13 @@
 #include "math.h"
 #include <stdio.h>
 
+struct totals{
+    int total;
+    int hand_treasure;
+    int deck_treasure;
+    int disc_treasure; 
+}
+
 // return a psudo random integer in given range (inclusive)
 int rand_between(int min, int max){
 
@@ -21,7 +28,7 @@ int is_treasure(int card){
 }
 
 /* generate a random game state with variables relevant to adventurer effect*/
-int generate_random_gamestate(int player, struct gameState *G){
+int generate_random_gamestate(int player, struct gameState *G, struct totals *T){
     // have a total number of cards to distribute, the hand must have at least one care (adventurer)
     int total = rand_between(1,15);
     int num_deck = rand_between(0, total - 1);
@@ -33,6 +40,9 @@ int generate_random_gamestate(int player, struct gameState *G){
     G->deckCount[player] = num_deck;
     for (i=0; i < num_deck; i++);
         G->deck[player][i] = rand_between(0, 26);
+        if(is_treasure(G->deck[player][i]) == 0){
+            T->deck_treasure++; 
+        }
 
     G->handCount[player] = num_hand;
     for (i=0; i < num_hand; i++);
@@ -44,8 +54,9 @@ int generate_random_gamestate(int player, struct gameState *G){
 
     G->hand[G->whoseTurn][player] = adventurer;
 
-    return total;
+    T->total = total;
 }
+
 
 int main () {
     //seed the random generator for my rand_between function with seconds since epoch
@@ -82,7 +93,7 @@ int main () {
         printf("Played Count: %d\n", G.playedCardCount);      
         i--;  
     }
-    
+
     return 0;
 }
 
