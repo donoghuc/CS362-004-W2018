@@ -6,6 +6,7 @@
 
 // return a psudo random integer in given range (inclusive)
 int rand_between(int min, int max){
+
     return rand() % (max + 1 - min) + min;
 }
 
@@ -19,77 +20,69 @@ int is_treasure(int card){
     }
 }
 
+/* generate a random game state with variables relevant to adventurer effect*/
+int generate_random_gamestate(int player, struct gameState *G){
+    // have a total number of cards to distribute, the hand must have at least one care (adventurer)
+    int total = rand_between(1,15);
+    int num_deck = rand_between(0, total - 1);
+    int num_hand = rand_between(1, total - num_deck);
+    int num_disc = total - num_deck - num_hand;
+    printf("num_deck: %d\nnum_hand: %d\nnum_disc: %d\n sum: %d\n total: %d\n", num_deck, num_hand, num_disc,(num_deck+num_hand+num_disc), total);
+    // distribute cards into deck, hand and discard (random cards between 0 and 26 inclusive)
+    int i;
+    G->deckCount[player] = num_deck;
+    for (i=0; i < num_deck; i++);
+        G->deck[player][i] = rand_between(0, 26);
+
+    G->handCount[player] = num_hand;
+    for (i=0; i < num_hand; i++);
+        G->hand[player][i] = rand_between(0, 26);
+
+    G->discardCount[player] = num_disc;
+    for (i=0; i < num_disc; i++);
+        G->discard[player][i] = rand_between(0, 26);
+
+    G->hand[G->whoseTurn][player] = adventurer;
+
+    return total;
+}
+
 int main () {
-	// set up game state
+    //seed the random generator for my rand_between function with seconds since epoch
+    srand(time(NULL));
+    // keep track of failure cases for final report
     int fail = 0; 
-    printf("Initialize a game with 2 players and add smithy to player 0 hand\n");
+    // initialize a game state (pre randomization)
     struct gameState G;
     int k[10] = {adventurer, gardens, embargo, village, minion, mine, cutpurse,
            sea_hag, tribute, smithy};
     initializeGame(2, k, 10, &G);
-    // put smitthy in position 0 to play it
-    G.hand[G.whoseTurn][0] = adventurer;
-    G.deck[0][1] = 4;
-    G.deck[0][4] = 1;
-    G.deckCount[0] = 0;
-    printHand(0,&G);
-    printf("Hand Count: %d\n", G.handCount[0]);
-    printDiscard(0,&G);
-    printf("Discard Count: %d\n", G.discardCount[0]);
-    printDeck(0,&G);
-    printf("Deck Count: %d\n", G.deckCount[0]);
-    printPlayed(0,&G);
-    printf("Played Count: %d\n", G.playedCardCount);
-    int ret = cardEffect(adventurer, -1,-1,-1,&G,0,0);
-    printHand(0,&G);
-    printf("Hand Count: %d\n", G.handCount[0]);
-    printDiscard(0,&G);
-    printf("Discard Count: %d\n", G.discardCount[0]);
-    printDeck(0,&G);
-    printf("Deck Count: %d\n", G.deckCount[0]);
-    printPlayed(0,&G);
-    printf("Played Count: %d\n", G.playedCardCount);
-    // // track hand count 
-    // int hand_count_pre = G.handCount[0];
-    // printf("handCount pre: %d\n", hand_count_pre);
-    // int ret = cardEffect(adventurer, -1,-1,-1,&G,0,0);
-    // if (ret != 0){
-    // 	printf("CARD EFFECT NON ZERO RETURN VALUE\n");
-    // 	fail++;
-    // }
-    // // check that adventurer added two treasure cards
-    // int hand_count_post = G.handCount[0];
-    // printf("handCount post: %d\n", hand_count_post);
-    // int new_cards = hand_count_post - (hand_count_pre);
-    // if ( new_cards != 2){
-    // 	if (new_cards < 2){
-   	//         printf("ERROR TOO FEW CARDS DRAWN\n");    		
-    // 	}
-    // 	else{
-    // 		printf("ERROR TOO MANY CARDS DRAWN\n");
-    // 	}
-    // 	fail++;  	
-    // }
-    // // check that only treasure cards were added 
-    // if (is_treasure(G.hand[G.whoseTurn][5]) + is_treasure(G.hand[G.whoseTurn][6]) != 0){
-    // 	printf("NON-TREASURE CARDS ADDED\n");
-    // 	fail++;
-    // }
+    int total_cards; //variable for comparing total cards allocated for test
 
-    // printHand(0,&G);
-    // printf("====================================\n");
-    // if(fail == 0){
-    //   printf(" ADVENTURER TEST PASSED\n");
-    // }
-    // else{
-    // 	printf("%d TEST FAILURE(s)\n", fail);
-    // }
-    // SelectStream(2);
-    // PutSeed(3);
-    // int i;
-    // for (i=0;i<35;i++){
-    //     printf("%d\n",(int) floor(Random() * 2));
-    // }
+    // execute random testing
+    int i = 10; 
+    while(i >= 0){
+        total_cards = generate_random_gamestate(0, &G);
+        printHand(0,&G);
+        printf("Hand Count: %d\n", G.handCount[0]);
+        printDiscard(0,&G);
+        printf("Discard Count: %d\n", G.discardCount[0]);
+        printDeck(0,&G);
+        printf("Deck Count: %d\n", G.deckCount[0]);
+        printPlayed(0,&G);
+        printf("Played Count: %d\n", G.playedCardCount);
+        int ret = cardEffect(adventurer, -1,-1,-1,&G,0,0);
+        printHand(0,&G);
+        printf("Hand Count: %d\n", G.handCount[0]);
+        printDiscard(0,&G);
+        printf("Discard Count: %d\n", G.discardCount[0]);
+        printDeck(0,&G);
+        printf("Deck Count: %d\n", G.deckCount[0]);
+        printPlayed(0,&G);
+        printf("Played Count: %d\n", G.playedCardCount);      
+        i--;  
+    }
+    
     return 0;
 }
 
