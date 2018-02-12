@@ -82,19 +82,22 @@ void generate_random_gamestate(int player, struct gameState *G){
 
     int i;
     G->deckCount[player] = num_deck;
-    for (i=0; i < num_deck; i++);
+    for (i=0; i < num_deck; i++){
         G->deck[player][i] = rand_between(0, 26);
-
+    }
 
     G->handCount[player] = num_hand;
-    for (i=0; i < num_hand; i++);
+    for (i=0; i < num_hand; i++){
         G->hand[player][i] = rand_between(0, 26);
+    }
 
     G->discardCount[player] = num_disc;
-    for (i=0; i < num_disc; i++);
+    for (i=0; i < num_disc; i++){
         G->discard[player][i] = rand_between(0, 26);
+    }
 
-    G->hand[G->whoseTurn][player] = adventurer;
+    G->hand[G->whoseTurn][0] = adventurer;
+
 
 }
 
@@ -122,11 +125,16 @@ int main () {
     int handPos;
     int bonus;
 
+    int hand_count_pre;
+    int disc_deck_pre;
+
     // execute random testing
-    int i = 10; 
+    int i = 100; 
     while(i >= 0){
         generate_random_gamestate(0, &G);
         count_treasure(0, &G, &T_pre);
+        hand_count_pre = G.handCount[0];
+        disc_deck_pre = G.discardCount[0] + G.deckCount[0];
         
 #if (DEBUG == 1)
         print_totals(&T_pre);
@@ -176,9 +184,13 @@ int main () {
                 fail++;
                 printf("FAIL: adventurer not discarded\n");
             }
-            if (G.handCount[0] - (G.discardCount[0] + G.deckCount[0]) != 2){
+            if (G.handCount[0] - hand_count_pre != 2){
                 fail++;
-                printf("FAIL: handcount %d discardCount: %d deckCount: %d expected difference of 2\n", G.handCount[0], G.discardCount[0],G.deckCount[0]);
+                printf("FAIL: Handcount pre - handcount: %d\n",G.handCount[0] - hand_count_pre);
+            }
+            if (disc_deck_pre - (G.discardCount[0] + G.deckCount[0])  != 2){
+                fail++;
+                printf("FAIL: cards not removed from discard or deck\n");
             }
             
 
@@ -194,6 +206,15 @@ int main () {
             if (G.hand[0][0] == adventurer){
                 fail++;
                 printf("FAIL: adventurer not discarded\n");
+            }
+
+            if (G.handCount[0] - hand_count_pre != possible){
+                fail++;
+                printf("FAIL: Handcount pre - handcount: %d\n",G.handCount[0] - hand_count_pre);
+            }
+            if (disc_deck_pre - (G.discardCount[0] + G.deckCount[0])  != possible){
+                fail++;
+                printf("FAIL: cards not removed from discard or deck\n");
             }
         }
 
