@@ -5,6 +5,7 @@
 #include <stdio.h>
 
 #define DEBUG 0
+#define NUM_TESTS 500
 
 // data structure for keepin track of treasure totals
 struct totals{
@@ -73,10 +74,12 @@ void generate_random_gamestate(int player, struct gameState *G){
     int total = rand_between(1,500);
     int num_deck = rand_between(0, total - 1);
     int num_hand = rand_between(1, total - num_deck);
-    int num_disc = total - num_deck - num_hand;
+    // int num_disc = total - num_deck - num_hand;
+    int num_disc = rand_between(0,(total - num_deck - num_hand));
+    int num_played = total - num_deck - num_hand - num_disc;
 #if (DEBUG == 1)
     printf("num_deck: %d\nnum_hand: %d\nnum_disc: %d\n sum: %d\n total: %d\n",
-                 num_deck, num_hand, num_disc,(num_deck+num_hand+num_disc), total);
+                 num_deck, num_hand, num_disc,(num_deck+num_hand+num_disc+num_played), total);
 #endif  
     // distribute cards into deck, hand and discard (random cards between 0 and 26 inclusive)
 
@@ -94,6 +97,11 @@ void generate_random_gamestate(int player, struct gameState *G){
     G->discardCount[player] = num_disc;
     for (i=0; i < num_disc; i++){
         G->discard[player][i] = rand_between(0, 26);
+    }
+
+    G->playedCardCount = num_played;
+    for (i=0; i < num_disc; i++){
+        G->playedCards[i] = rand_between(0, 26);
     }
 
     G->hand[G->whoseTurn][0] = adventurer;
@@ -127,14 +135,16 @@ int main () {
 
     int hand_count_pre;
     int disc_deck_pre;
+    int played_pre;
 
     // execute random testing
-    int i = 100; 
-    while(i >= 0){
+    int i = NUM_TESTS; 
+    while(i > 0){
         generate_random_gamestate(0, &G);
         count_treasure(0, &G, &T_pre);
         hand_count_pre = G.handCount[0];
         disc_deck_pre = G.discardCount[0] + G.deckCount[0];
+        played_pre = G.playedCardCount; 
         
 #if (DEBUG == 1)
         print_totals(&T_pre);
@@ -170,23 +180,24 @@ int main () {
             fail++;
             printf("FAIL: non zero return value for card effect");
         }
+        if (T_pre.total != T_post.total){
+            fail++;
+            printf("FAIL: Total pre: %d\n total post: %d\n", T_pre.total, T_post.total);
+        }
+        if (G.playedCardCount - played_pre != 1){
+            fail++;
+            printf("FAIL: %d cards played.\n", G.playedCardCount - played_pre);
+        }
         possible = possible_treasure(&T_pre);
         if (possible >= 2){
-            if (T_pre.total != T_post.total){
-                fail++;
-                printf("FAIL: Total pre: %d\n total post: %d\n", T_pre.total, T_post.total);
-            }
+
             if (T_post.hand_treasure - T_pre.hand_treasure != 2){
                 fail++;
                 printf("FAIL: Two treasure not gained\n");
             }
-            if (G.hand[0][0] == adventurer){
+            if (G.handCount[0] - (hand_count_pre - 1) != 2){
                 fail++;
-                printf("FAIL: adventurer not discarded\n");
-            }
-            if (G.handCount[0] - hand_count_pre != 2){
-                fail++;
-                printf("FAIL: Handcount pre - handcount: %d\n",G.handCount[0] - hand_count_pre);
+                printf("FAIL: Handcount pre - handcount: %d\n",G.handCount[0] - (hand_count_pre - 1));
             }
             if (disc_deck_pre - (G.discardCount[0] + G.deckCount[0])  != 2){
                 fail++;
@@ -195,22 +206,13 @@ int main () {
             
 
         } else {
-            if (T_pre.total != T_post.total){
-                fail++;
-                printf("FAIL: Total pre: %d\n total post: %d\n", T_pre.total, T_post.total);
-            }
             if ((T_post.hand_treasure - T_pre.hand_treasure) != possible){
                 fail++;
                 printf("FAIL: %d treasure not gained\n", possible);
             }
-            if (G.hand[0][0] == adventurer){
+            if (G.handCount[0] - (hand_count_pre - 1) != possible){
                 fail++;
-                printf("FAIL: adventurer not discarded\n");
-            }
-
-            if (G.handCount[0] - hand_count_pre != possible){
-                fail++;
-                printf("FAIL: Handcount pre - handcount: %d\n",G.handCount[0] - hand_count_pre);
+                printf("FAIL: Handcount pre - handcount: %d\n",G.handCount[0] - (hand_count_pre - 1));
             }
             if (disc_deck_pre - (G.discardCount[0] + G.deckCount[0])  != possible){
                 fail++;
@@ -221,26 +223,11 @@ int main () {
         i--;  
     }
 
+    if (fail == 0) {
+        printf("%d Random Tests Pass.",NUM_TESTS);
+    } else{
+        printf("%d Test Failures.\n", fail);
+    }
+
     return 0;
 }
-
-// struct gameState {
-//   int numPlayers; //number of players
-//   int supplyCount[treasure_map+1];  //this is the amount of a specific type of card given a specific number.
-//   int embargoTokens[treasure_map+1];
-//   int outpostPlayed;
-//   int outpostTurn;
-//   int whoseTurn;
-//   int phase;
-//   int numActions; /* Starts at 1 each turn */
-//   int coins; /* Use as you see fit! */
-//   int numBuys; /* Starts at 1 each turn */
-//   int hand[MAX_PLAYERS][MAX_HAND];
-//   int handCount[MAX_PLAYERS];
-//   int deck[MAX_PLAYERS][MAX_DECK];
-//   int deckCount[MAX_PLAYERS];
-//   int discard[MAX_PLAYERS][MAX_DECK];
-//   int discardCount[MAX_PLAYERS];
-//   int playedCards[MAX_DECK];
-//   int playedCardCount;
-// };
