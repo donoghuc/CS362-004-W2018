@@ -70,7 +70,7 @@ void count_treasure(int player, struct gameState *G, struct totals *T){
 
 /* generate a random game state with variables relevant to adventurer effect*/
 void generate_random_gamestate(int player, struct gameState *G){
-    // have a total number of cards to distribute, the hand must have at least one care (adventurer)
+    // have a total number of cards to distribute, the hand must have at least one card (adventurer)
     int total = rand_between(1,500);
     int num_deck = rand_between(0, total - 1);
     int num_hand = rand_between(1, total - num_deck);
@@ -82,28 +82,28 @@ void generate_random_gamestate(int player, struct gameState *G){
                  num_deck, num_hand, num_disc,(num_deck+num_hand+num_disc+num_played), total);
 #endif  
     // distribute cards into deck, hand and discard (random cards between 0 and 26 inclusive)
-
+    // fill deck
     int i;
     G->deckCount[player] = num_deck;
     for (i=0; i < num_deck; i++){
         G->deck[player][i] = rand_between(0, 26);
     }
-
+    // fill hand 
     G->handCount[player] = num_hand;
     for (i=0; i < num_hand; i++){
         G->hand[player][i] = rand_between(0, 26);
     }
-
+    // fill discard
     G->discardCount[player] = num_disc;
     for (i=0; i < num_disc; i++){
         G->discard[player][i] = rand_between(0, 26);
     }
-
+    // fill played
     G->playedCardCount = num_played;
     for (i=0; i < num_disc; i++){
         G->playedCards[i] = rand_between(0, 26);
     }
-
+    // set adventurer to hand pos 0
     G->hand[G->whoseTurn][0] = adventurer;
 
 
@@ -132,20 +132,23 @@ int main () {
     int choice3;
     int handPos;
     int bonus;
-
+    int ret; 
+    // variables to track the pre-card effect game state
     int hand_count_pre;
     int disc_deck_pre;
     int played_pre;
 
-    // execute random testing
+    // execute random testing iterations
     int i = NUM_TESTS; 
     while(i > 0){
+        // generate a random game state and log the pre-conditions
         generate_random_gamestate(0, &G);
         count_treasure(0, &G, &T_pre);
         hand_count_pre = G.handCount[0];
         disc_deck_pre = G.discardCount[0] + G.deckCount[0];
         played_pre = G.playedCardCount; 
         
+        // print out a detailed snapshot of game state if in debug mode 
 #if (DEBUG == 1)
         print_totals(&T_pre);
         printHand(0,&G);
@@ -156,15 +159,17 @@ int main () {
         printf("Deck Count: %d\n", G.deckCount[0]);
         printPlayed(0,&G);
         printf("Played Count: %d\n", G.playedCardCount);
-#endif        
-        int choice1 = rand_between(-500,500);
-        int choice2 = rand_between(-500,500);
-        int choice3 = rand_between(-500,500);
-        int handPos = rand_between(-500,500);
-        int bonus = rand_between(-500,500);
-        int ret = cardEffect(adventurer, choice1,choice2,choice3,&G,handPos,bonus);
+#endif       
+        // assign random inputs (choose random in range +/- 500) 
+        choice1 = rand_between(-500,500);
+        choice2 = rand_between(-500,500);
+        choice3 = rand_between(-500,500);
+        handPos = 0;
+        bonus = rand_between(-500,500);
+        // call the card effect function 
+        ret = cardEffect(adventurer, choice1,choice2,choice3,&G,handPos,bonus);
         count_treasure(0, &G, &T_post);
-        
+        // print out post-effect state for debug mode 
 #if (DEBUG == 1)
         print_totals(&T_post);
         printHand(0,&G);
@@ -176,52 +181,61 @@ int main () {
         printPlayed(0,&G);
         printf("Played Count: %d\n", G.playedCardCount);   
 #endif    
+        // first test case is if function returns non zero value
         if (ret != 0){
             fail++;
             printf("FAIL: non zero return value for card effect");
         }
+        // now check that the total number of cards did not change (no cards lost or gained)
         if (T_pre.total != T_post.total){
             fail++;
             printf("FAIL: Total pre: %d\n total post: %d\n", T_pre.total, T_post.total);
         }
+        // check that card played count is incremented 
         if (G.playedCardCount - played_pre != 1){
             fail++;
             printf("FAIL: %d cards played.\n", G.playedCardCount - played_pre);
         }
+        // track the number of possible treasure to determine how many possible treasures there are to find
         possible = possible_treasure(&T_pre);
         if (possible >= 2){
-
+            // there are at least two treasure to find
             if (T_post.hand_treasure - T_pre.hand_treasure != 2){
                 fail++;
                 printf("FAIL: Two treasure not gained\n");
             }
+            // make sure hand count is increased by two (with adventurer being discarded)
             if (G.handCount[0] - (hand_count_pre - 1) != 2){
                 fail++;
                 printf("FAIL: Handcount pre - handcount: %d\n",G.handCount[0] - (hand_count_pre - 1));
             }
+            // check that 2 cards have been removed from discard/deck
             if (disc_deck_pre - (G.discardCount[0] + G.deckCount[0])  != 2){
                 fail++;
                 printf("FAIL: cards not removed from discard or deck\n");
             }        
 
         } else {
+            // there are either 0 or 1 treasure to find, make sure that amoutn is found
             if ((T_post.hand_treasure - T_pre.hand_treasure) != possible){
                 fail++;
                 printf("FAIL: %d treasure not gained\n", possible);
             }
+            // check that 0 or 1 cards goes in to hand
             if (G.handCount[0] - (hand_count_pre - 1) != possible){
                 fail++;
                 printf("FAIL: Handcount pre - handcount: %d\n",G.handCount[0] - (hand_count_pre - 1));
             }
+            // check that 0 or 1 cards have been removed from discard/deck
             if (disc_deck_pre - (G.discardCount[0] + G.deckCount[0])  != possible){
                 fail++;
                 printf("FAIL: cards not removed from discard or deck\n");
             }
         }
-
+        // test conditional to keep while loop going
         i--;  
     }
-
+    // print test results 
     if (fail == 0) {
         printf("%d Random Tests Pass.\n",NUM_TESTS);
     } else{
