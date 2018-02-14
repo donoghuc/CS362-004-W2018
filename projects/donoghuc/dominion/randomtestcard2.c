@@ -15,7 +15,7 @@ int rand_between(int min, int max){
 /* generate a random game state with variables relevant to adventurer effect*/
 void generate_random_gamestate(int player, struct gameState *G){
     // have a total number of cards to distribute, the hand must have at least one care (adventurer)
-    int total = rand_between(1,50);
+    int total = rand_between(1,500);
     int num_deck = rand_between(0, total - 1);
     int num_hand = rand_between(1, total - num_deck);
     int num_disc = rand_between(0,(total - num_deck - num_hand));
