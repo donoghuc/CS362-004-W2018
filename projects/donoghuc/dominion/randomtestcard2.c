@@ -25,7 +25,6 @@ void generate_random_gamestate(int player, struct gameState *G){
                  num_deck, num_hand, num_disc,(num_deck+num_hand+num_disc+num_played), total);
 #endif  
     // distribute cards into deck, hand and discard (random cards between 0 and 26 inclusive)
-
     int i;
     G->deckCount[player] = num_deck;
     for (i=0; i < num_deck; i++){
@@ -46,7 +45,7 @@ void generate_random_gamestate(int player, struct gameState *G){
     for (i=0; i < num_played; i++){
         G->playedCards[i] = rand_between(0, 26);
     }
-
+    // place steward in hand position 0
     G->hand[G->whoseTurn][0] = steward;
 }
 
@@ -74,6 +73,7 @@ int main () {
     int bonus;
     int ret;
 
+    // variables to store pre card effect state 
     int hand_count_pre;
     int deck_count_pre;
     int discard_count_pre;
@@ -84,6 +84,7 @@ int main () {
     // execute random testing
     int i = NUM_TESTS; 
     while(i > 0){
+        // generate game state and store variables of interest
         generate_random_gamestate(0, &G);
         hand_count_pre = G.handCount[0];
         deck_count_pre = G.deckCount[0];
@@ -102,9 +103,11 @@ int main () {
         printPlayed(0,&G);
         printf("Played Count: %d\n", G.playedCardCount);
 #endif        
-
+        // generate a random choice (+2 treasure, draw 2, trash 2)
         choice1 = rand_between(0,2);
+        // if choice is 0 the player wants to trash two cards, must be careful in how those are randomly chosen
         if (choice1 == 0){
+            // there are enough cards in hand to trash two, pick two disticnt onces to trash
             if (G.handCount[0] > 3){
                 choice2 = rand_between(1,G.handCount[0] - 1);
                 choice3 = rand_between(1,G.handCount[0] - 1);
@@ -113,30 +116,33 @@ int main () {
                     choice3 = rand_between(1,G.handCount[0] - 1);
                 }
             }
+            // there are exactly enough to trash two, in pos 1 and 2, nothing random here. 
             if (G.handCount[0] == 3){
                 choice2 = 1;
                 choice3 = 2;
             }
+            // there is only one card to trash (not including steward)
             if (G.handCount[0] == 2){
                 choice1 = 1;
                 choice2 = 1;
             }
+            // there is only the steward card
             if (G.handCount[0] == 1){
                 choice1 = 0;
                 choice2 = 0;
             }
-
+        // if choice1 is not 0 these are arbitrary, assign random
         } else{
             choice2 = rand_between(-500,500);
             choice3 = rand_between(-500,500);         
         }
-        printf("choice1: %d\n",choice1);
-
+        // assign a random bonus and call cardeffect with stward
         handPos = 0;
         bonus = rand_between(-500,500);
         ret = cardEffect(steward, choice1,choice2,choice3,&G,0,bonus);
         
 #if (DEBUG == 1)
+        printf("choice1: %d\n",choice1);
         printHand(0,&G);
         printf("Hand Count: %d\n", G.handCount[0]);
         printDiscard(0,&G);
@@ -149,10 +155,12 @@ int main () {
         printf("hand: %d, deck: %d, discard: %d, played: %d, total: %d \n",G.handCount[0], G.deckCount[0], G.discardCount[0], G.playedCardCount,
                                                                          G.handCount[0] + G.deckCount[0] + G.discardCount[0] + G.playedCardCount);
 #endif    
+        // check that cardeffect returns 0
         if (ret != 0){
             fail++;
             printf("FAIL: non zero return value for card effect");
         }
+        // case where two cards are trashed, if possible, check that correct number of cards have left the nand. 
         if (choice1 == 0){
             possible = hand_count_pre;
             if (possible >= 3){
@@ -169,6 +177,7 @@ int main () {
             }
 
         }
+        // case where two cards are drawn, check that possible cards have been drawn
         if (choice1 == 1){
             possible = deck_count_pre + discard_count_pre;
             if (possible >= 2){
@@ -185,6 +194,7 @@ int main () {
 
 
         }
+        // case where want two more coins, check that the two coins are added to whatever the bonus and prevoius state was. 
         if (choice1 == 2){
             if((G.coins + bonus) - (coins_pre + bonus) != 2){
                 fail++;
@@ -192,10 +202,9 @@ int main () {
             }
         }
 
-
         i--;  
     }
-
+    // print final test info. 
     if (fail == 0) {
         printf("%d Random Tests Pass.\n",NUM_TESTS);
     } else{
