@@ -117,19 +117,64 @@ unittestresults.out: unittest1 unittest2 unittest3 unittest4 cardtest1 cardtest2
 randomtestcard1: randomtestcard1.c dominion.o rngs.o interface.o
 	gcc -o randomtestcard1 randomtestcard1.c -g dominion.o rngs.o interface.o $(CFLAGS)
 
+randomtestcard1.out: randomtestcard1
+	rm -f dominion.c.gcov
+	echo "====================================" > randomtestcard1.out
+	echo "Running Random Test for Smithy:" >> randomtestcard1.out
+	echo "====================================" >> randomtestcard1.out
+	./randomtestcard1 >> randomtestcard1.out
+	echo "====================================" >> randomtestcard1.out
+	gcov -b -c dominion.c >> randomtestcard1.out
+	echo "====================================" >> randomtestcard1.out
+	echo "Coverage Look" >> randomtestcard1.out
+	echo "====================================" >> randomtestcard1.out
+	sed -n '953,970p' dominion.c.gcov >> randomtestcard1.out
+	echo "====================================" >> randomtestcard1.out
+
 randomtestcard2: randomtestcard2.c dominion.o rngs.o interface.o
 	gcc -o randomtestcard2 randomtestcard2.c -g dominion.o rngs.o interface.o $(CFLAGS)
+
+
+randomtestcard2.out: randomtestcard2
+	rm -f dominion.c.gcov
+	echo "====================================" > randomtestcard2.out
+	echo "Running Random Test for Steward:" >> randomtestcard2.out
+	echo "====================================" >> randomtestcard2.out
+	./randomtestcard2 >> randomtestcard2.out
+	echo "====================================" >> randomtestcard2.out
+	gcov -b -c dominion.c >> randomtestcard2.out
+	echo "====================================" >> randomtestcard2.out
+	echo "Coverage Look" >> randomtestcard2.out
+	echo "====================================" >> randomtestcard2.out
+	sed -n '1424,1454p' dominion.c.gcov >> randomtestcard2.out
+	echo "====================================" >> randomtestcard2.out
 
 randomtestadventurer: randomtestadventurer.c dominion.o rngs.o interface.o
 	gcc -o randomtestadventurer randomtestadventurer.c -g dominion.o rngs.o interface.o $(CFLAGS)
 
+randomtestadventurer.out: randomtestadventurer
+	rm -f dominion.c.gcov
+	echo "====================================" > randomtestadventurer.out
+	echo "Running Random Test for Adventurer:" >> randomtestadventurer.out
+	echo "====================================" >> randomtestadventurer.out
+	./randomtestadventurer >> randomtestadventurer.out
+	echo "====================================" >> randomtestadventurer.out
+	gcov -b -c dominion.c >> randomtestadventurer.out
+	echo "====================================" >> randomtestadventurer.out
+	echo "Coverage Look" >> randomtestadventurer.out
+	echo "====================================" >> randomtestadventurer.out
+	sed -n '905,950p' dominion.c.gcov >> randomtestadventurer.out
+	echo "====================================" >> randomtestadventurer.out
+
 player: player.c interface.o
 	gcc -o player player.c -g  dominion.o rngs.o interface.o $(CFLAGS)
 
-all: playdom player testDrawCard testBuyCard badTestDrawCard unittestresults.out
+all: playdom player testDrawCard testBuyCard badTestDrawCard unittestresults.out \
+	randomtestcard1 randomtestcard2 randomtestadventurer
 
 clean:
 	rm -f *.o playdom.exe playdom player player.exe  *.gcov \
 	*.gcda *.gcno *.so *.out  testDrawCard testDrawCard.exe \
 	badTestDrawCard unittest1 unittest2 unittest3 unittest4 cardtest1 \
-	cardtest2 cardtest3 cardtest4 unittestresults.out randomtestadventurer
+	cardtest2 cardtest3 cardtest4 unittestresults.out randomtestadventurer \
+	randomtestcard2 randomtestcard1

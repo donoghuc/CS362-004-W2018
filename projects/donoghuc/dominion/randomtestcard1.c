@@ -15,7 +15,7 @@ int rand_between(int min, int max){
 /* generate a random game state with variables relevant to adventurer effect*/
 void generate_random_gamestate(int player, struct gameState *G){
     // have a total number of cards to distribute, the hand must have at least one care (adventurer)
-    int total = rand_between(1,50);
+    int total = rand_between(1,500);
     int num_deck = rand_between(0, total - 1);
     int num_hand = rand_between(1, total - num_deck);
     int num_disc = rand_between(0,(total - num_deck - num_hand));
@@ -81,7 +81,7 @@ int main () {
 
     // execute random testing
     int i = NUM_TESTS; 
-    while(i >= 0){
+    while(i > 0){
         generate_random_gamestate(0, &G);
         hand_count_pre = G.handCount[0];
         deck_count_pre = G.deckCount[0];
@@ -157,7 +157,7 @@ int main () {
     }
 
     if (fail == 0) {
-        printf("%d Random Tests Pass.",NUM_TESTS);
+        printf("%d Random Tests Pass.\n",NUM_TESTS);
     } else{
         printf("%d Test Failures.\n", fail);
     }

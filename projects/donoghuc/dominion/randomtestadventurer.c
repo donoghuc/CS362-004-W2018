@@ -202,8 +202,7 @@ int main () {
             if (disc_deck_pre - (G.discardCount[0] + G.deckCount[0])  != 2){
                 fail++;
                 printf("FAIL: cards not removed from discard or deck\n");
-            }
-            
+            }        
 
         } else {
             if ((T_post.hand_treasure - T_pre.hand_treasure) != possible){
@@ -224,7 +223,7 @@ int main () {
     }
 
     if (fail == 0) {
-        printf("%d Random Tests Pass.",NUM_TESTS);
+        printf("%d Random Tests Pass.\n",NUM_TESTS);
     } else{
         printf("%d Test Failures.\n", fail);
     }
