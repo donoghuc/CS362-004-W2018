@@ -115,6 +115,12 @@ int main () {
     srand(time(NULL));
     // keep track of failure cases for final report
     int fail = 0; 
+    int fail_non_zero = 0;
+    int fail_total_cards = 0;
+    int fail_played_cards = 0;
+    int fail_treasure = 0;
+    int fail_hand_count = 0;
+    int fail_decrement_dec_disc = 0; 
     // initialize a game state (pre randomization)
     struct gameState G;
     struct totals T_pre;
@@ -184,17 +190,26 @@ int main () {
         // first test case is if function returns non zero value
         if (ret != 0){
             fail++;
+            fail_non_zero++;
+#if (DEBUG == 1)
             printf("FAIL: non zero return value for card effect");
+#endif
         }
         // now check that the total number of cards did not change (no cards lost or gained)
         if (T_pre.total != T_post.total){
             fail++;
+            fail_total_cards++;
+#if (DEBUG == 1)
             printf("FAIL: Total pre: %d\n total post: %d\n", T_pre.total, T_post.total);
+#endif
         }
         // check that card played count is incremented 
         if (G.playedCardCount - played_pre != 1){
             fail++;
+            fail_played_cards++;
+#if (DEBUG == 1)
             printf("FAIL: %d cards played.\n", G.playedCardCount - played_pre);
+#endif
         }
         // track the number of possible treasure to determine how many possible treasures there are to find
         possible = possible_treasure(&T_pre);
@@ -202,34 +217,52 @@ int main () {
             // there are at least two treasure to find
             if (T_post.hand_treasure - T_pre.hand_treasure != 2){
                 fail++;
+                fail_treasure++;
+#if (DEBUG == 1)
                 printf("FAIL: Two treasure not gained\n");
+#endif
             }
             // make sure hand count is increased by two (with adventurer being discarded)
             if (G.handCount[0] - (hand_count_pre - 1) != 2){
                 fail++;
+                fail_hand_count++;
+#if (DEBUG == 1)
                 printf("FAIL: Handcount pre - handcount: %d\n",G.handCount[0] - (hand_count_pre - 1));
+#endif
             }
             // check that 2 cards have been removed from discard/deck
             if (disc_deck_pre - (G.discardCount[0] + G.deckCount[0])  != 2){
                 fail++;
+                fail_decrement_dec_disc++;
+#if (DEBUG == 1)
                 printf("FAIL: cards not removed from discard or deck\n");
+#endif
             }        
 
         } else {
             // there are either 0 or 1 treasure to find, make sure that amoutn is found
             if ((T_post.hand_treasure - T_pre.hand_treasure) != possible){
                 fail++;
+                fail_treasure++;
+#if (DEBUG == 1)
                 printf("FAIL: %d treasure not gained\n", possible);
+#endif
             }
             // check that 0 or 1 cards goes in to hand
             if (G.handCount[0] - (hand_count_pre - 1) != possible){
                 fail++;
+                fail_hand_count++;
+#if (DEBUG == 1)
                 printf("FAIL: Handcount pre - handcount: %d\n",G.handCount[0] - (hand_count_pre - 1));
+#endif
             }
             // check that 0 or 1 cards have been removed from discard/deck
             if (disc_deck_pre - (G.discardCount[0] + G.deckCount[0])  != possible){
                 fail++;
+                fail_decrement_dec_disc++;
+#if (DEBUG == 1)
                 printf("FAIL: cards not removed from discard or deck\n");
+#endif
             }
         }
         // test conditional to keep while loop going
@@ -239,8 +272,16 @@ int main () {
     if (fail == 0) {
         printf("%d Random Tests Pass.\n",NUM_TESTS);
     } else{
-        printf("%d Test Failures.\n", fail);
+        printf("Total Tests: %d \n",NUM_TESTS);
+        printf("Total test failures: %d\n", fail);
+        printf("Non zero cardEffect return: %d\n", fail_non_zero);
+        printf("Total cards off after call: %d \n", fail_total_cards);
+        printf("Played card not incremented: %d \n", fail_played_cards);
+        printf("Treasure not gained: %d \n", fail_treasure);
+        printf("Hand count not incremented: %d \n", fail_hand_count);
+        printf("Cards nor removed from deck/discard: %d \n", fail_decrement_dec_disc);
     }
 
     return 0;
 }
+

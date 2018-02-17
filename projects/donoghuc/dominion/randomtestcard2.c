@@ -45,6 +45,8 @@ void generate_random_gamestate(int player, struct gameState *G){
     for (i=0; i < num_played; i++){
         G->playedCards[i] = rand_between(0, 26);
     }
+    // generate random amount of coins 
+    G->coins = rand(0,500);
     // place steward in hand position 0
     G->hand[G->whoseTurn][0] = steward;
 }
@@ -55,6 +57,10 @@ int main () {
     srand(time(NULL));
     // keep track of failure cases for final report
     int fail = 0; 
+    int fail_non_zero = 0;
+    int fail_trashed = 0;
+    int fail_drawn = 0;
+    int fail_coins = 0; 
     // initialize a game state (pre randomization)
     struct gameState G;
 
@@ -158,7 +164,10 @@ int main () {
         // check that cardeffect returns 0
         if (ret != 0){
             fail++;
+            fail_non_zero++;
+#if (DEBUG == 1)
             printf("FAIL: non zero return value for card effect");
+#endif
         }
         // case where two cards are trashed, if possible, check that correct number of cards have left the nand. 
         if (choice1 == 0){
@@ -166,13 +175,19 @@ int main () {
             if (possible >= 3){
                 if((hand_count_pre - 1) - G.handCount[0] != 2){
                     fail++;
+                    fail_trashed++;
+#if (DEBUG == 1)
                     printf("FAIL: two cards not trashed on choice 0: %d\n", hand_count_pre - (G.handCount[0] - 1));
+#endif
                 }
             }
             if (possible == 2){
                 if((hand_count_pre - 1) - G.handCount[0] != 1){
                     fail++;
+                    fail_trashed++;
+#if (DEBUG == 1)
                     printf("FAIL: one card not trashed on choice 0 and 1 possible: %d\n", hand_count_pre - (G.handCount[0] - 1));
+#endif
                 }                
             }
 
@@ -183,12 +198,18 @@ int main () {
             if (possible >= 2){
                 if(G.handCount[0] - (hand_count_pre - 1) != 2){
                     fail++;
+                    fail_drawn++;
+#if (DEBUG == 1)
                     printf("FAIL: two cards not drawn on choice 1: %d\n", G.handCount[0] - hand_count_pre );
+#endif
                 }                
             } else{
                 if(G.handCount[0] - (hand_count_pre - 1) != possible){
                     fail++;
+                    fail_drawn++;
+#if (DEBUG == 1)
                     printf("FAIL: %d cards not drawn on choice 1: %d\n",possible, G.handCount[0] - hand_count_pre );
+#endif
                 }    
             }
 
@@ -198,7 +219,10 @@ int main () {
         if (choice1 == 2){
             if((G.coins + bonus) - (coins_pre + bonus) != 2){
                 fail++;
+                fail_coins++;
+#if (DEBUG == 1)
                 printf("FAIL: two coins not added on choice 2: %d\n", (G.coins + bonus) - (coins_pre + bonus));
+#endif
             }
         }
 
@@ -208,7 +232,13 @@ int main () {
     if (fail == 0) {
         printf("%d Random Tests Pass.\n",NUM_TESTS);
     } else{
-        printf("%d Test Failures.\n", fail);
+        printf("Total Tests: %d \n",NUM_TESTS);
+        printf("Total test failures: %d\n", fail);
+        printf("Non zero cardEffect return: %d\n", fail_non_zero);
+        printf("Cards not trashed: %d \n", fail_trashed);
+        printf("Cards not drawn: %d \n", fail_drawn);
+        printf("Coins not awarded: %d \n", fail_coins);
+
     }
 
     return 0;

@@ -56,6 +56,12 @@ int main () {
     srand(time(NULL));
     // keep track of failure cases for final report
     int fail = 0; 
+    int fail_non_zero = 0;
+    int fail_total_cards = 0;
+    int fail_played_cards = 0;
+    int fail_cards_drawn = 0;
+    int fail_decrement_dec_disc = 0; 
+
     // initialize a game state (pre randomization)
     struct gameState G;
 
@@ -126,17 +132,26 @@ int main () {
         // check that cardEffect returns 0
         if (ret != 0){
             fail++;
+            fail_non_zero++;
+#if (DEBUG == 1)
             printf("FAIL: non zero return value for card effect");
+#endif
         }
         // make sure no cards gained or lost
         if (total_pre != (G.handCount[0] + G.deckCount[0] + G.discardCount[0] + G.playedCardCount)){
             fail++;
+            fail_total_cards++;
+#if (DEBUG == 1)
             printf("FAIL: Total pre: %d\n total post: %d\n", total_pre, (G.handCount[0] + G.deckCount[0] + G.discardCount[0] + G.playedCardCount));
+#endif
         }
         // make sure smithy imcrements played cards 
         if (G.playedCardCount - played_count_pre != 1){
             fail++;
+            fail_played_cards++;
+#if (DEBUG == 1)
             printf("FAIL: %d cards played.\n", G.playedCardCount - played_count_pre);
+#endif
         }
         // track if it is possible to draw three cards or not
         possible = G.deckCount[0] + G.discardCount[0];
@@ -144,24 +159,36 @@ int main () {
         if (possible >= 3){
             if (G.handCount[0] - (hand_count_pre - 1) != 3){
                 fail++;
+                fail_cards_drawn++;
+#if (DEBUG == 1)
                 printf("FAIL: %d cards drawn\n", G.handCount[0] - (hand_count_pre - 1));
+#endif
             }
             // check that deck/discard loose the three cards gained in hand. 
             if ((deck_count_pre - G.deckCount[0]) + (discard_count_pre - G.discardCount[0]) != 3){
                 fail++;
+                fail_decrement_dec_disc++;
+#if (DEBUG == 1)
                 printf("FAIL: Diff of deck count: %d, diff of discard count: %d\n", deck_count_pre - G.deckCount[0], discard_count_pre - G.discardCount[0]);
+#endif
             }
         }
         // check that they player gains as many cards as were possible to gain
         else if (possible < 3){
             if (G.handCount[0] - (hand_count_pre - 1) != possible){
                 fail++;
+                fail_cards_drawn++;
+#if (DEBUG == 1)
                 printf("FAIL: %d cards drawn\n", G.handCount[0] - (hand_count_pre - 1));
+#endif
             }
             // check that cards gained in hand are removded from deck
             if ((deck_count_pre - G.deckCount[0]) + (discard_count_pre - G.discardCount[0]) != possible){
                 fail++;
+                fail_decrement_dec_disc++;
+#if (DEBUG == 1)
                 printf("FAIL: Diff of deck count: %d, diff of discard count: %d\n", deck_count_pre - G.deckCount[0], discard_count_pre - G.discardCount[0]);
+#endif            
             }     
         }
 
@@ -171,7 +198,13 @@ int main () {
     if (fail == 0) {
         printf("%d Random Tests Pass.\n",NUM_TESTS);
     } else{
-        printf("%d Test Failures.\n", fail);
+        printf("Total Tests: %d \n",NUM_TESTS);
+        printf("Total test failures: %d\n", fail);
+        printf("Non zero cardEffect return: %d\n", fail_non_zero);
+        printf("Total cards off after call: %d \n", fail_total_cards);
+        printf("Played card not incremented: %d \n", fail_played_cards);
+        printf("Cards not drawn: %d \n", fail_cards_drawn);
+        printf("Cards nor removed from deck/discard: %d \n", fail_decrement_dec_disc);
     }
 
     return 0;
