@@ -1,1 +1,40 @@
-Bug Report 
+############################################################# 
+#                    Bug Report: Smithy card effect         #
+#############################################################
+
+Unique ID: 
+Smithy_bug_1
+
+Version Detected on: https://github.com/wenwend/CS362-004-W2018/blob/dongwen-assignment-2/projects/dongwen/dominion/dominion.c
+
+Severity: 
+If game play includes smithy card severity is Major, if smithy is excluded then Minor
+
+Priority:
+If game play includes smithy priority is High, if not then priority is Low.
+
+Symptom: 
+4 cards are added to the player’s hand when smithy is called in cardEffect. The expected result is that the smithy card is discarded from the player’s hand and three new cards are added to the player’s hand from the deck. If the deck is empty then the discard pile is shuffled back in to the deck and cards continue to be drawn. In the case that there are not 3 cards to draw the effect should be that the available quantity (0,1,2) should be added to the player’s hand. In any case the cards added to the player’s hand should be removed from the deck/discard. 
+
+Reproduce bug: 
+Initialize gamestate G. Set players hand with smithy, copper, copper, estate, copper in hand position 0-4. Also set the deck to estate, copper, estate, copper in position 0-4. Call cardEffect with the following signature: cardEffect(smithy, -1,-1,-1,&G,0,0). After executing cardEffect smithy should be removed from hand position 0, the copper, copper and estate from deck postion 4,3,2 should be added to the players hand. The source code for a test that reproduces the bug can be found at https://github.com/donoghuc/CS362-004-W2018/blob/master/projects/dongwen/dominion/cardtest1.c
+
+############################################################# 
+#                    Bug Report: Adventurer card effect     #
+#############################################################
+Unique ID: 
+Adventurer_bug_1
+
+Version Detected on: https://github.com/wenwend/CS362-004-W2018/blob/dongwen-assignment-2/projects/dongwen/dominion/dominion.c
+
+Severity: 
+If game play includes adventurer card severity is Major, if adventurer is excluded then Minor
+
+Priority:
+If game play includes adventurer priority is High, if not then priority is Low.
+
+Symptom: 
+Non zero return value from cardEffect when valid game state is passed to card effect. This results in NO TREASURE CARDS BEING ADDED TO PLAYER’S HAND. The expected effect on gamestate when cardEffect is called with adventurer is that adventurer card will be discarded, and two treasure cards will be added to the player’s hand. The treasure cards are obtained by drawing a card from the discard repeatedly until either two treasures are found. If the deck “runs out” the existing discard is shuffled back into the deck and treasures are continued to be searched for. If there are not two treasures to be found then the amount of treasure (0 or 1) is added to the player’s hand. Any card that is added to the hand must also be removed from the deck. 
+
+Reproduce bug: 
+Initialize gamestate G. Set players hand with adventurer, copper, copper, estate, copper in hand position 0-4. Also set the deck to estate, copper, estate, copper in position 0-4. Call cardEffect with the following signature: cardEffect(adventurer, -1,-1,-1,&G,0,0). After executing the function the coppers from deck position 3 and 4 should be added to the players hand in position 4 and 5. The adventurer card should be removed from position 0. The source code for a test that reproduces the bug can be found at https://github.com/donoghuc/CS362-004-W2018/blob/master/projects/dongwen/dominion/cardtest2.c
