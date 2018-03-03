@@ -4,8 +4,8 @@
 #include "math.h"
 #include <stdio.h>
 
-#define DEBUG 0
-#define NUM_TESTS 500
+#define DEBUG 1
+#define NUM_TESTS 1
 
 // data structure for keepin track of treasure totals
 struct totals{

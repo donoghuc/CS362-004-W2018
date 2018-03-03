@@ -4,8 +4,8 @@
 #include "math.h"
 #include <stdio.h>
 
-#define DEBUG 0
-#define NUM_TESTS 500
+#define DEBUG 1
+#define NUM_TESTS 1
 
 // return a psudo random integer in given range (inclusive)
 int rand_between(int min, int max){

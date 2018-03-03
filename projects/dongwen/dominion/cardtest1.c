@@ -14,6 +14,7 @@ int main () {
     // put smitthy in position 0 to play it
     G.hand[G.whoseTurn][0] = smithy;
     printHand(0,&G);
+    printDeck(0,&G);
     // track hand count 
     int hand_count_pre = G.handCount[0];
     printf("handCount pre: %d\n", hand_count_pre);
@@ -41,6 +42,7 @@ int main () {
     	fail++;  	
     }
     printHand(0,&G);
+    printDeck(0,&G);
     printf("====================================\n");
     if(fail == 0){
       printf("SMITTHY TEST PASSED\n");
