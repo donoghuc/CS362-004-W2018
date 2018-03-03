@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 #define DEBUG 0
-#define NUM_TESTS 500
+#define NUM_TESTS 5
 
 // return a psudo random integer in given range (inclusive)
 int rand_between(int min, int max){

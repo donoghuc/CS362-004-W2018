@@ -693,8 +693,8 @@ int smithy_function(int currentPlayer, struct gameState *state, int handPos){
     int i;
     //draw 3 cards
     //BUG-ADDITION
-    // for (int i = 0; i < 3; i++) { //PRE-BUG
-    for (i = 0; i <= 3; i++) { // BUG
+    for (int i = 0; i < 3; i++) { //PRE-BUG
+    // for (i = 0; i <= 3; i++) { // BUG
         drawCard(currentPlayer, state);
     }
       
