@@ -24,8 +24,8 @@ import junit.framework.TestCase;
  */
 public class UrlValidatorTest extends TestCase {
 
-   private final boolean printStatus = false;
-   private final boolean printIndex = false;//print index that indicates current scheme,host,port,path, query test were using.
+   private final boolean printStatus = true;
+   private final boolean printIndex = true;//print index that indicates current scheme,host,port,path, query test were using.
 
    public UrlValidatorTest(String testName) {
       super(testName);
@@ -41,6 +41,7 @@ protected void setUp() {
    public void testIsValid() {
         testIsValid(testUrlParts, UrlValidator.ALLOW_ALL_SCHEMES);
         setUp();
+        System.out.print(testUrlScheme.length);
 //        int options =
 //            UrlValidator.ALLOW_2_SLASHES
 //                + UrlValidator.ALLOW_ALL_SCHEMES
@@ -87,6 +88,7 @@ protected void setUp() {
       assertTrue(urlVal.isValid("http://www.google.com/"));
       int statusPerLine = 60;
       int printed = 0;
+      int counter = 0;
       if (printIndex)  {
          statusPerLine = 6;
       }
@@ -106,7 +108,10 @@ protected void setUp() {
          assertEquals(url, expected, result);
          if (printStatus) {
             if (printIndex) {
-               System.out.print(testPartsIndextoString());
+//               System.out.print(testPartsIndextoString());
+//               System.out.print(counter);
+            	System.out.println(url);
+//            	System.out.println(urlVal.matchURL(url).matches());
             } else {
                if (result == expected) {
                   System.out.print('.');
@@ -116,10 +121,11 @@ protected void setUp() {
             }
             printed++;
             if (printed == statusPerLine) {
-               System.out.println();
+//               System.out.println();
                printed = 0;
             }
          }
+         counter++;
       } while (incrementTestPartsIndex(testPartsIndex, testObjects));
       if (printStatus) {
          System.out.println();
